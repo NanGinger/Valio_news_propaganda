@@ -1,0 +1,32 @@
+import json
+from gensim import corpora, models
+from nltk.tokenize import word_tokenize
+
+# Load text data from the JSON file
+with open('valio.json', 'r', encoding='utf-8') as file:
+    data = json.load(file)
+
+# Assume 'texts' is the key containing the list of preprocessed strings
+preprocessed_texts = data['texts']
+
+# Tokenize each string into a list of words
+tokenized_texts = [word_tokenize(text) for text in preprocessed_texts]
+
+# Create a dictionary and a corpus
+dictionary = corpora.Dictionary(tokenized_texts)
+corpus = [dictionary.doc2bow(text) for text in tokenized_texts]
+
+# Build the LDA model
+lda_model = models.LdaModel(corpus, num_topics=10, id2word=dictionary, passes=15)
+
+# # Print the topics
+for topic_id, topic_words in lda_model.print_topics():
+   print(f'Topic {topic_id + 1}: {topic_words}')
+
+# # Save the model
+lda_model.save('lda_model')
+
+print('LDA model has been successfully created and saved.')
+
+
+

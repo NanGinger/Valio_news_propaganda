@@ -1,0 +1,42 @@
+import requests
+from bs4 import BeautifulSoup
+
+def get_all_links(url):
+    # Make a GET request to the URL
+    response = requests.get(url)
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        # Parse the HTML content of the page
+        soup = BeautifulSoup(response.text, 'html.parser')
+        # Find all hyperlinks on the page using the 'a' tag
+        links = soup.find_all('a', href=True)
+
+        # Extract and return the href attribute (URL) for each hyperlink
+        return [link['href'] for link in links]
+    else:
+        print(f"Failed to retrieve the page. Status code: {response.status_code}")
+        return []
+
+
+def get_text_from_links(links):
+    for link in links:
+        response=requests.get(link)
+        content=response.text
+        soup=BeautifulSoup(content,"html.parser")
+        all_normaltext=soup.findAll("div",attrs={"class":"vl-news-article__content"})
+        for normaltext in all_normaltext:
+           my_text=normaltext.text
+        with open("valio.txt", "a") as file:
+            for item in my_text:
+                file.write(item)
+            
+
+url = 'https://www.valio.com/news-archive/'
+all_links = get_all_links(url)
+p1=all_links.index("https://www.valio.com/news/the-winner-of-valiohackathon-uses-data-to-solve-the-reasons-behind-seasonal-variation-of-milkproduction/")
+#print (p1)
+p2=all_links.index("https://www.valio.com/news/valio-celebrates-a-heritage-of-innovation-at-the-annual-fic-in-shanghai-china/")
+#print (p2)
+all_linksnew=all_links[66:216]
+if all_linksnew:
+   get_text_from_links(all_linksnew)

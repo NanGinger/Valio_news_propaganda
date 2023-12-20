@@ -1,0 +1,30 @@
+import json
+from gensim import corpora, models
+from nltk.tokenize import word_tokenize
+import pyLDAvis.gensim_models
+import matplotlib.pyplot as plt
+
+# Load text data from the JSON file
+with open('valio.json', 'r', encoding='utf-8') as file:
+    data = json.load(file)
+
+# Assume 'texts' is the key containing the list of preprocessed strings
+preprocessed_texts = data['texts']
+
+# Tokenize each string into a list of words
+tokenized_texts = [word_tokenize(text) for text in preprocessed_texts]
+
+# Create a dictionary and a corpus
+dictionary = corpora.Dictionary(tokenized_texts)
+corpus = [dictionary.doc2bow(text) for text in tokenized_texts]
+
+# Build the LDA model
+lda_model = models.LdaModel(corpus, num_topics=5, id2word=dictionary, passes=15)
+
+# Visualize the topics
+lda_display = pyLDAvis.gensim_models.prepare(lda_model, corpus, dictionary, sort_topics=False)
+pyLDAvis.save_html(lda_display, 'lda_visualization5.html')
+
+# Display the local HTML file in your default web browser
+import webbrowser
+webbrowser.open('lda_visualization5.html')

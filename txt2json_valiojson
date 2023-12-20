@@ -1,0 +1,57 @@
+import nltk
+import ssl
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+
+
+
+def file_to_word_list(input_file):
+    with open(input_file, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    # Flatten the list of lists into a single list of words
+    word_list = [word for line in lines for word in line.strip().split()]
+
+    return word_list
+
+
+
+
+import json
+
+def list_to_json_file(word_list, output_file):
+    # Convert the list to JSON format
+    json_data = json.dumps(word_list, indent=2)
+
+    # Write the JSON data to the output file
+    with open(output_file, 'w', encoding='utf-8') as json_file:
+        json_file.write(json_data)
+
+
+input_word_file = 'processed_text.txt'
+word_list = file_to_word_list(input_word_file)
+output_json_file = 'processed_text.json'
+
+list_to_json_file(word_list, output_json_file)
+
+import json
+
+# Example list of words
+
+# Create a dictionary with "texts" as the key
+data = {'texts': word_list}
+
+# Specify the output JSON file path
+output_json_path = 'valio.json'
+
+# Write the dictionary to a JSON file
+with open(output_json_path, 'w', encoding='utf-8') as json_file:
+    json.dump(data, json_file)
+
+print(f'Word list has been successfully converted to {output_json_path}')
+
