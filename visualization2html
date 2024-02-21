@@ -5,7 +5,7 @@ import pyLDAvis.gensim_models
 import matplotlib.pyplot as plt
 
 # Load text data from the JSON file
-with open('valio.json', 'r', encoding='utf-8') as file:
+with open('valio21.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
 
 # Assume 'texts' is the key containing the list of preprocessed strings
